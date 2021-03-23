@@ -1,143 +1,77 @@
-
 // call the function
-autoUpdate();
 
+let ampm;
+function displayClockTime() {
+  const time = new Date();
+  let hours = displayAmPm(time.getHours());
+  const minutes = addLeadingZero(time.getMinutes());
+  const seconds = addLeadingZero(time.getSeconds());
 
-function autoUpdate(){
-
-// VARIABLES
-
-    var today = new Date();
-    let hoursToday    = today.getHours();
-    let minutesToday  = today.getMinutes();
-    let secondsToday  = today.getSeconds(); 
-    let monthToday    = today.getMonth();
-    let dayToday      = today.getDay();
-    let dateToday     = today.getDate();
-    let yearToday     = today.getFullYear();
-    let ampm;
-    
-
-// TIME DISPLAY ---------------------------------------------------------
-
-    // Leading Zero
-    if (minutesToday < 10) {
-        minutesToday = "0" + minutesToday;
-    }  
-    if (secondsToday < 10) {
-        secondsToday = "0" + secondsToday;
-    }
-    
-    // AM-PM
-    if (hoursToday <= 12) {
-        ampm = "AM";
-    } else {
-        ampm = "PM";
-    }
-
-    // Correct format - hours - military    
-    if (hoursToday === 00 || hoursToday === 0) {
-        hoursToday = 12;
-    } else if (hoursToday > 12) {
-        hoursToday = hoursToday - 12;
-    }      
-    
-    //display TIME in HTML 
-    var timeDisplay = [`${hoursToday}:${minutesToday}:${secondsToday} ${ampm}`];
-    document.getElementById("time").innerHTML   = timeDisplay;
-
-
-// DATE DISPLAY ---------------------------------------------------------
-    //day of the week - calculation for presentation
-    switch (dayToday) {
-            case 0:
-                dayToday = "Sunday";
-            break;
-            case 1:
-                dayToday = "Monday";
-            break;
-            case 2:
-                dayToday = "Tuesday";
-            break;
-            case 3:
-                dayToday = "Wednesday";
-            break;
-            case 4:
-                dayToday = "Thursday";
-            break;    
-            case 5:
-                dayToday = "Friday";
-            break;
-            case 6:
-                dayToday = "Saturday";
-            break;
-    }    
-
-    //month - calcualation for presentation
-    switch (monthToday) {
-            case 0:
-                monthToday = "January";
-            break;
-            case 1:
-                monthToday = "February";
-            break;
-            case 2:
-                monthToday = "March";
-            break;
-            case 3:
-                monthToday = "April";
-            break;
-            case 4:
-                monthToday = "May";
-            break;    
-            case 5:
-                monthToday = "June";
-            break;
-            case 6:
-                monthToday = "July";
-            break;
-            case 7:
-                monthToday = "August";
-            break;
-            case 8:
-                monthToday = "September";
-            break;
-            case 9:
-                monthToday = "october";
-            break;
-            case 10:
-                monthToday = "November";
-            break;
-            case 11:
-                monthToday = "December";
-            break;    
-            case 5:
-                monthToday = "June";
-            break;
-            case 6:
-                monthToday = "July";
-            break;
-            }    
-  
-    //Date endings (st,rd,th)
-    if (dateToday === 01 || dateToday === 21 || dateToday === 31) {
-                dateToday = dateToday +"st";
-    }  else if (dateToday === 02|| dateToday === 22) {
-                dateToday = dateToday +"nd";
-    }  else if (dateToday === 03 || dateToday === 23) {
-                dateToday = dateToday + "rd";
-    }  else {
-                dateToday= dateToday + "th";
-    }
-       
-    //display DATE in HTML
-    var dateDisplay = [`${dayToday}, ${monthToday} ${dateToday} ${yearToday}`];
-    document.getElementById("date").innerHTML = (dateDisplay);
-
-
-    // set auto re-fresh
-    setInterval(autoUpdate,1000);
-
+  const timeDisplay = `${hours}:${minutes}:${seconds} ${amPm}`;
+  document.getElementById('time').textContent = timeDisplay;
 }
 
+function displayClockDate() {
+  const today = new Date();
+  let month = months[today.getMonth()];
+  let day = days[today.getDay()];
+  let date = convertDateToOrdinal(today.getDate());
+  let year = today.getFullYear();
+  const dateDisplay = `${day}, ${month} ${date} ${year}`;
+  document.getElementById('date').textContent = dateDisplay;
+}
 
+const days = [
+  'Sunday',
+  'Monday',
+  'Tueseday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+
+function addLeadingZero(number) {
+  return number < 10 ? '0' + number : number;
+}
+
+function displayAmPm(hour) {
+  const isAm = hour < 12 || hour === 0;
+  amPm = isAm ? 'AM' : 'PM';
+  hour = hour >= 13 ? hour - 12 : hour;
+
+  hour = hour === 0 ? hour + 12 : hour;
+  return hour;
+}
+
+function convertDateToOrdinal(number) {
+  if (number < 10 || number > 20) {
+    switch (number % 10) {
+      case 1:
+        return number + 'st';
+      case 2:
+        return number + 'nd';
+      case 3:
+        return number + 'rd';
+    }
+  }
+  return number + 'th';
+}
+
+displayClockDate();
+displayClockTime();
+setInterval(displayClockTime, 1000);
